@@ -1,33 +1,7 @@
 const express = require("express");
-const mysql = require("mysql2/promise");
+const { getDB } = require("./database");
 
 const router = express.Router();
-
-let db;
-
-// Configuración MySQL
-const dbConfig = {
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "",
-    database: "fruteria"
-};
-
-// Conectar a MySQL
-async function connectDB() {
-    try {
-
-        db = await mysql.createConnection(dbConfig);
-
-        console.log("Conectado a MySQL");
-
-    } catch (err) {
-
-        console.error("Error de conexión:", err);
-
-    }
-}
 
 // =======================
 // GET - Todos los usuarios
@@ -35,7 +9,7 @@ async function connectDB() {
 router.get("/", async (req, res) => {
 
     try {
-
+        const db = getDB();
         const [rows] = await db.execute(
             "SELECT * FROM usuarios WHERE activo = 1"
         );
@@ -62,7 +36,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
 
     try {
-
+        const db = getDB();
         const [rows] = await db.execute(
             "SELECT * FROM usuarios WHERE id_usuario = ?",
             [req.params.id]
@@ -100,7 +74,7 @@ router.post("/", async (req, res) => {
     const { name, surname, type, phone, email, age, institution } = req.body;
 
     try {
-        
+        const db = getDB();
         const [result] = await db.execute(
             "INSERT INTO usuarios (nombre, apellidos, tipo_usuario, telefono, correo, activo, institucion, edad) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [name, surname, type, phone, email, 1, institution, age]
@@ -136,7 +110,7 @@ router.put("/:id", async (req, res) => {
     const { name, surname, type, phone, email, age, institution } = req.body;
 
     try {
-
+        const db = getDB();
         const [result] = await db.execute(
     `UPDATE usuarios
      SET nombre = ?,
@@ -186,7 +160,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
 
     try {
-
+        const db = getDB();
         const [user] = await db.execute(
             "SELECT * FROM usuarios WHERE id_usuario = ?",
             [req.params.id]
@@ -222,7 +196,4 @@ router.delete("/:id", async (req, res) => {
 
 });
 
-module.exports = {
-    connectDB,
-    router
-};
+module.exports = router;

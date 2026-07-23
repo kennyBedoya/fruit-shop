@@ -1,13 +1,9 @@
 const express = require("express");
+const { getDB } = require("./database");
 
 const router = express.Router();
 
-let db;
 
-// Se reutiliza la conexión creada desde main.js
-function setDB(connection) {
-    db = connection;
-}
 
 // =======================
 // GET - Todas las cuentas
@@ -16,7 +12,7 @@ function setDB(connection) {
 router.get("/", async (req, res) => {
 
     try {
-
+        const db = getDB();
         const [rows] = await db.execute(`
             SELECT
                 c.id_cuentas,
@@ -52,7 +48,7 @@ router.get("/", async (req, res) => {
 router.get("/:usuarioId", async (req, res) => {
 
     try {
-
+        const db = getDB();
         const [rows] = await db.execute(`
             SELECT
                 c.id_cuentas,
@@ -104,7 +100,7 @@ router.post("/", async (req, res) => {
     } = req.body;
 
     try {
-
+        const db = getDB();
         // Verificar que el usuario exista y esté activo
         const [usuario] = await db.execute(
             "SELECT id_usuario FROM usuarios WHERE id_usuario = ? AND activo = 1",
@@ -164,7 +160,7 @@ router.put("/:usuarioId", async (req, res) => {
     } = req.body;
 
     try {
-
+        const db = getDB();
         const [result] = await db.execute(
             `UPDATE cuentas
              SET
@@ -209,7 +205,4 @@ router.put("/:usuarioId", async (req, res) => {
 
 });
 
-module.exports = {
-    setDB,
-    router
-};
+module.exports = router;

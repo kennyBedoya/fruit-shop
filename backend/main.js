@@ -1,22 +1,33 @@
 const express = require("express");
-const { connectDB, router: usersRouter } = require("./services/usuarios");
+
+const { connectDB } = require("./services/database");
+
+const usuarios = require("./services/usuarios");
+const cuentas = require("./services/cuentas");
 
 const app = express();
-const PORT = 3000;
 
 app.use(express.json());
 
-connectDB();
+async function start() {
 
-app.use("/usuarios", usersRouter);
+    try {
 
-app.get("/", (req, res) => {
-    res.json({
-        success: true,
-        message: "API funcionando"
-    });
-});
+        await connectDB();
 
-app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-});
+        app.use("/usuarios", usuarios);
+        app.use("/cuentas", cuentas);
+
+        app.listen(3000, () => {
+            console.log("Servidor iniciado en puerto 3000");
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+    }
+
+}
+
+start();
