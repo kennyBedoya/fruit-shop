@@ -19,7 +19,8 @@ router.get("/", async (req, res) => {
                 c.usuario_id,
                 c.saldo_anterior,
                 c.saldo_actual,
-                c.ultima_trasaccion_id
+                c.ultima_transaccion_id,
+                c.acudiente_id
             FROM cuentas c
             INNER JOIN usuarios u
                 ON u.id_usuario = c.usuario_id
@@ -55,7 +56,8 @@ router.get("/:usuarioId", async (req, res) => {
                 c.usuario_id,
                 c.saldo_anterior,
                 c.saldo_actual,
-                c.ultima_trasaccion_id
+                c.ultima_transaccion_id,
+                c.acudiente_id
             FROM cuentas c
             INNER JOIN usuarios u
                 ON u.id_usuario = c.usuario_id
@@ -96,7 +98,8 @@ router.post("/", async (req, res) => {
         usuario_id,
         saldo_anterior,
         saldo_actual,
-        ultima_trasaccion_id
+        ultima_transaccion_id,
+        acudiente_id
     } = req.body;
 
     try {
@@ -116,13 +119,14 @@ router.post("/", async (req, res) => {
 
         const [result] = await db.execute(
             `INSERT INTO cuentas
-            (usuario_id, saldo_anterior, saldo_actual, ultima_trasaccion_id)
-            VALUES (?, ?, ?, ?)`,
+            (usuario_id, saldo_anterior, saldo_actual, ultima_transaccion_id, acudiente_id)
+            VALUES (?, ?, ?, ?, ?)`,
             [
                 usuario_id,
                 saldo_anterior,
                 saldo_actual,
-                ultima_trasaccion_id
+                ultima_transaccion_id,
+                acudiente_id
             ]
         );
 
@@ -156,7 +160,8 @@ router.put("/:usuarioId", async (req, res) => {
     const {
         saldo_anterior,
         saldo_actual,
-        ultima_trasaccion_id
+        ultima_transaccion_id,
+        acudiente_id
     } = req.body;
 
     try {
@@ -166,12 +171,14 @@ router.put("/:usuarioId", async (req, res) => {
              SET
                 saldo_anterior = ?,
                 saldo_actual = ?,
-                ultima_trasaccion_id = ?
+                ultima_transaccion_id = ?,
+                acudiente_id = ?
              WHERE usuario_id = ?`,
             [
                 saldo_anterior,
                 saldo_actual,
-                ultima_trasaccion_id,
+                ultima_transaccion_id,
+                acudiente_id,
                 req.params.usuarioId
             ]
         );

@@ -98,6 +98,7 @@ Crea una cuenta para un usuario activo.
 | saldo_anterior | Decimal | Sí |
 | saldo_actual | Decimal | Sí |
 | ultima_trasaccion_id | Integer / Null | No |
+| acudiente_id| Integer / Null | No |
 
 ### Response (201 Created)
 
@@ -110,7 +111,8 @@ Crea una cuenta para un usuario activo.
         "usuario_id": 1,
         "saldo_anterior": 0,
         "saldo_actual": 1000,
-        "ultima_trasaccion_id": null
+        "ultima_trasaccion_id": null,
+        "acudiente_id": null
     }
 }
 ```
@@ -144,7 +146,8 @@ Actualiza la información de la cuenta de un usuario.
 {
     "saldo_anterior": 1000,
     "saldo_actual": 1500,
-    "ultima_trasaccion_id": 15
+    "ultima_trasaccion_id": 15,
+    "acudiente_id": null
 }
 ```
 
