@@ -71,6 +71,22 @@ const deactivateUser = async (user) => {
     console.error('Error deactivating user:', err)
   }
 }
+
+const activateUser = async (user) => {
+  const confirmed = window.confirm(
+    `¿Deseas activar al usuario ${user.nombre} ${user.apellidos}?`
+  )
+
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    await usersStore.activateUser(user.id_usuario)
+  } catch (err) {
+  console.error('Error activating user:', err)
+}
+}
 </script>
 
 <template>
@@ -108,6 +124,7 @@ const deactivateUser = async (user) => {
       :loading="loading"
       @edit="openEditForm"
       @deactivate="deactivateUser"
+      @activate="activateUser"
     />
 
     <UserForm

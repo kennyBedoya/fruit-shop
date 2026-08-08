@@ -161,6 +161,54 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
 
     try {
+
+        const db = getDB();
+
+        const [user] = await db.execute(
+            "SELECT * FROM usuarios WHERE id_usuario = ?",
+            [req.params.id]
+        );
+
+        if (user.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Usuario no encontrado"
+            });
+        }
+
+        await db.execute(
+            "UPDATE usuarios SET activo = 0 WHERE id_usuario = ?",
+            [req.params.id]
+        );
+
+        const [updatedUser] = await db.execute(
+            "SELECT * FROM usuarios WHERE id_usuario = ?",
+            [req.params.id]
+        );
+
+        res.json({
+            success: true,
+            message: "Usuario desactivado",
+            data: updatedUser[0]
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+
+    }
+
+});
+
+// =======================
+// PATCH - Activar usuario
+// =======================
+router.patch("/:id/activate", async (req, res) => {
+
+    try {
         const db = getDB();
         const [user] = await db.execute(
             "SELECT * FROM usuarios WHERE id_usuario = ?",
@@ -175,15 +223,19 @@ router.delete("/:id", async (req, res) => {
         }
 
         await db.execute(
-           // "DELETE FROM usuarios WHERE id_usuario = ?",
-           "UPDATE usuarios SET activo = 0 WHERE id_usuario = ?",
+            "UPDATE usuarios SET activo = 1 WHERE id_usuario = ?",
+            [req.params.id]
+        );
+
+        const [updatedUser] = await db.execute(
+            "SELECT * FROM usuarios WHERE id_usuario = ?",
             [req.params.id]
         );
 
         res.json({
             success: true,
-            message: "Usuario eliminado",
-            data: user[0]
+            message: "Usuario activado",
+            data: updatedUser[0]
         });
 
     } catch (err) {

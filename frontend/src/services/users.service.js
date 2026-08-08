@@ -30,10 +30,17 @@ const deactivateUser = async (id) => {
   return response.data
 }
 
+const activateUser = async (id) => {
+  const response = await api.patch(`/usuarios/${id}/activate`)
+
+  return response.data
+}
+
 export default {
   getUsers,
   getUser,
   createUser,
   updateUser,
   deactivateUser,
+  activateUser,
 }

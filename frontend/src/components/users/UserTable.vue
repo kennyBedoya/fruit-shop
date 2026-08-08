@@ -12,7 +12,8 @@ defineProps({
 
 const emit = defineEmits([
   'edit',
-  'deactivate'
+  'deactivate',
+  'activate'
 ])
 </script>
 
@@ -92,6 +93,15 @@ const emit = defineEmits([
                 @click="emit('deactivate', user)"
               >
                 Desactivar
+              </button>
+
+              <button
+                v-else
+                type="button"
+                class="action-button activate"
+                @click="emit('activate', user)"
+              >
+                Activar
               </button>
             </div>
           </td>
@@ -210,6 +220,11 @@ const emit = defineEmits([
   text-align: center;
 
   color: var(--color-text-secondary);
+}
+
+.activate {
+  background: #e8f5e9;
+  color: var(--color-success);
 }
 
 @media (max-width: 768px) {

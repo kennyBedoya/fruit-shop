@@ -113,6 +113,32 @@ export const useUsersStore = defineStore('users', () => {
     }
   }
 
+  const activateUser = async (id) => {
+  loading.value = true
+  error.value = null
+
+  try {
+    const response = await usersService.activateUser(id)
+
+    const index = users.value.findIndex(
+      (currentUser) => currentUser.id_usuario === id
+    )
+
+    if (index !== -1) {
+      users.value[index] = response.data
+    }
+
+    return response.data
+  } catch (err) {
+    error.value = err
+    console.error('Error activating user:', err)
+
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
   return {
     users,
     loading,
@@ -123,5 +149,6 @@ export const useUsersStore = defineStore('users', () => {
     createUser,
     updateUser,
     deactivateUser,
+    activateUser,
   }
 })
