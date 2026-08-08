@@ -1,20 +1,36 @@
 <script setup>
 import { onMounted } from 'vue'
-import usersService from '@/services/users.service'
+import { storeToRefs } from 'pinia'
 
-onMounted(async () => {
-  try {
-    const response = await usersService.getUsers()
+import { useUsersStore } from '@/stores/users'
 
-    console.log('Usuarios:', response)
-  } catch (error) {
-    console.error('Error obteniendo usuarios:', error)
-  }
+const usersStore = useUsersStore()
+
+const {
+  users,
+  loading,
+  error,
+} = storeToRefs(usersStore)
+
+onMounted(() => {
+  usersStore.fetchUsers()
 })
 </script>
 
 <template>
   <section>
+
     <h1>Usuarios</h1>
+
+    <p v-if="loading">
+      Cargando usuarios...
+    </p>
+
+    <p v-else-if="error">
+      Error cargando usuarios.
+    </p>
+
+    <pre v-else>{{ users }}</pre>
+
   </section>
 </template>
