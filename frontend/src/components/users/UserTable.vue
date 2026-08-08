@@ -9,6 +9,10 @@ defineProps({
     default: false,
   },
 })
+
+const emit = defineEmits([
+  'edit',
+])
 </script>
 
 <template>
@@ -75,6 +79,7 @@ defineProps({
               <button
                 type="button"
                 class="action-button edit"
+                @click="emit('edit', user)"
               >
                 Editar
               </button>

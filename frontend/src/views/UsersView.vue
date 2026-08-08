@@ -1,10 +1,11 @@
 <script setup>
-import { onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useUsersStore } from '@/stores/users'
 
 import UserTable from '@/components/users/UserTable.vue'
+import UserForm from '@/components/users/UserForm.vue'
 
 const usersStore = useUsersStore()
 
@@ -14,9 +15,46 @@ const {
   error,
 } = storeToRefs(usersStore)
 
+const showForm = ref(false)
+const selectedUser = ref(null)
+
+const formLoading = computed(() => loading.value)
+
 onMounted(() => {
   usersStore.fetchUsers()
 })
+
+const openCreateForm = () => {
+  selectedUser.value = null
+  showForm.value = true
+}
+
+const openEditForm = (user) => {
+  selectedUser.value = user
+  showForm.value = true
+}
+
+const closeForm = () => {
+  showForm.value = false
+  selectedUser.value = null
+}
+
+const handleSubmit = async (user) => {
+  try {
+    if (selectedUser.value) {
+      await usersStore.updateUser(
+        selectedUser.value.id_usuario,
+        user
+      )
+    } else {
+      await usersStore.createUser(user)
+    }
+
+    closeForm()
+  } catch (err) {
+    console.error('Error saving user:', err)
+  }
+}
 </script>
 
 <template>
@@ -35,6 +73,7 @@ onMounted(() => {
       <button
         type="button"
         class="create-button"
+        @click="openCreateForm"
       >
         + Crear usuario
       </button>
@@ -51,6 +90,15 @@ onMounted(() => {
     <UserTable
       :users="users"
       :loading="loading"
+      @edit="openEditForm"
+    />
+
+    <UserForm
+      v-if="showForm"
+      :user="selectedUser"
+      :loading="formLoading"
+      @submit="handleSubmit"
+      @cancel="closeForm"
     />
 
   </section>
@@ -97,18 +145,10 @@ onMounted(() => {
 
   font-size: 14px;
   font-weight: 600;
-
-  transition:
-    background 0.2s ease,
-    transform 0.1s ease;
 }
 
 .create-button:hover {
   background: var(--color-primary-dark);
-}
-
-.create-button:active {
-  transform: translateY(1px);
 }
 
 .error-message {
