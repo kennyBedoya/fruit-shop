@@ -12,6 +12,7 @@ defineProps({
 
 const emit = defineEmits([
   'edit',
+  'deactivate'
 ])
 </script>
 
@@ -88,6 +89,7 @@ const emit = defineEmits([
                 v-if="user.activo"
                 type="button"
                 class="action-button deactivate"
+                @click="emit('deactivate', user)"
               >
                 Desactivar
               </button>

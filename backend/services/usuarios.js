@@ -11,7 +11,8 @@ router.get("/", async (req, res) => {
     try {
         const db = getDB();
         const [rows] = await db.execute(
-            "SELECT * FROM usuarios WHERE activo = 1"
+            //"SELECT * FROM usuarios WHERE activo = 1"
+            "SELECT * FROM usuarios"
         );
 
         res.json({

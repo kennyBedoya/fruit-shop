@@ -55,6 +55,22 @@ const handleSubmit = async (user) => {
     console.error('Error saving user:', err)
   }
 }
+
+const deactivateUser = async (user) => {
+  const confirmed = window.confirm(
+    `¿Deseas desactivar al usuario ${user.nombre} ${user.apellidos}?`
+  )
+
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    await usersStore.deactivateUser(user.id_usuario)
+  } catch (err) {
+    console.error('Error deactivating user:', err)
+  }
+}
 </script>
 
 <template>
@@ -91,6 +107,7 @@ const handleSubmit = async (user) => {
       :users="users"
       :loading="loading"
       @edit="openEditForm"
+      @deactivate="deactivateUser"
     />
 
     <UserForm
