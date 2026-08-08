@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 
 const { connectDB } = require("./services/database");
 
@@ -8,6 +9,7 @@ const transacciones = require("./services/transacciones");
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 async function start() {
