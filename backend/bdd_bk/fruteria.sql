@@ -27,7 +27,7 @@ CREATE TABLE `cuentas` (
   `usuario_id` int(11) DEFAULT NULL,
   `saldo_anterior` decimal(18,2) DEFAULT NULL,
   `saldo_actual` decimal(18,2) DEFAULT NULL,
-  `ultima_transaccion_id` int(11) DEFAULT NULL,
+  `ultima_trasaccion_id` int(11) DEFAULT NULL,
   `acudiente_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_cuentas`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
@@ -39,7 +39,7 @@ CREATE TABLE `cuentas` (
 
 LOCK TABLES `cuentas` WRITE;
 /*!40000 ALTER TABLE `cuentas` DISABLE KEYS */;
-INSERT INTO `cuentas` VALUES (1,2,0.00,1000.00,8,NULL);
+INSERT INTO `cuentas` VALUES (1,2,1000.00,51000.00,5,NULL);
 /*!40000 ALTER TABLE `cuentas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,8 +150,12 @@ CREATE TABLE `transacciones` (
   `saldo_anterior` decimal(18,2) DEFAULT NULL,
   `saldo_actual` decimal(18,2) DEFAULT NULL,
   `medio_pago_id` int(11) DEFAULT NULL,
+  `estado` varchar(45) NOT NULL DEFAULT 'PENDIENTE',
+  `descripcion` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id_transacciones`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,7 +164,7 @@ CREATE TABLE `transacciones` (
 
 LOCK TABLES `transacciones` WRITE;
 /*!40000 ALTER TABLE `transacciones` DISABLE KEYS */;
-INSERT INTO `transacciones` VALUES (1,2,1,50000.00,100000.00,150000.00,2);
+INSERT INTO `transacciones` VALUES (1,2,1,50000.00,100000.00,150000.00,2,'PENDIENTE',NULL,NULL,NULL),(2,2,1,50000.00,100000.00,150000.00,2,'PENDIENTE',NULL,NULL,NULL),(3,2,1,50000.00,100000.00,150000.00,2,'PENDIENTE',NULL,NULL,NULL),(4,2,1,50000.00,100000.00,150000.00,2,'PENDIENTE',NULL,NULL,NULL),(5,2,1,50000.00,1000.00,51000.00,2,'completada',NULL,'2026-08-23 23:22:08','2026-08-23 23:22:08');
 /*!40000 ALTER TABLE `transacciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -191,7 +195,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Juan Perez','prueba',1,'3333333','juan@email.com',1,2,33),(2,'prueba','vue 3333',1,'11111','prueba@mail.com',1,2,77);
+INSERT INTO `usuarios` VALUES (1,'Juan Perez','prueba',1,'3333333','juan@email.com',1,2,33),(2,'prueba','vue 3333',1,'2222','prueba@mail.com',1,2,77);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -204,4 +208,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-08-23 10:49:34
+-- Dump completed on 2026-08-23 18:30:39
