@@ -13,18 +13,19 @@ router.get("/", async (req, res) => {
 
     try {
         const db = getDB();
+
         const [rows] = await db.execute(`
             SELECT
                 c.id_cuentas,
                 c.usuario_id,
+                u.nombre,
+                u.apellidos,
                 c.saldo_anterior,
                 c.saldo_actual,
-                c.ultima_transaccion_id,
-                c.acudiente_id
+                c.ultima_trasaccion_id
             FROM cuentas c
             INNER JOIN usuarios u
-                ON u.id_usuario = c.usuario_id
-            WHERE u.activo = 1
+                ON c.usuario_id = u.id_usuario
         `);
 
         res.json({
