@@ -77,4 +77,33 @@ router.post("/", async (req, res) => {
 
 });
 
+// =======================
+// GET - Todas las transacciones
+// =======================
+router.get("/", async (req, res) => {
+
+    try {
+
+        const db = getDB();
+
+        const [rows] = await db.execute(
+            "SELECT * FROM transacciones"
+        );
+
+        res.json({
+            success: true,
+            data: rows
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+
+    }
+
+});
+
 module.exports = router;
