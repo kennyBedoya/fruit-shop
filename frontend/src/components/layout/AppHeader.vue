@@ -18,6 +18,10 @@
           Cuentas
         </RouterLink>
 
+        <RouterLink to="/transacciones">
+          Transacciones
+        </RouterLink>
+
       </nav>
 
       <div class="user-menu">
