@@ -48,6 +48,9 @@ const formattedAmount = computed(() => {
   return formatCurrency(selectedAccount.value.saldo_actual)
 })
 
+const isCredit = computed(() => transactionType.value === 1)
+const isPayment = computed(() => transactionType.value === 2)
+
 const openTransaction = async (account) => {
   selectedAccount.value = account
   transactionType.value = null
@@ -65,10 +68,11 @@ const openTransaction = async (account) => {
 }
 
 const closeTransaction = () => {
+    /*
   if (submitting.value) {
     return
   }
-
+*/
   selectedAccount.value = null
   transactionType.value = null
   amount.value = ''
@@ -80,6 +84,11 @@ const closeTransaction = () => {
 
 const selectTransactionType = async (type) => {
   transactionType.value = type
+
+  // Crédito no utiliza medio de pago.
+  if (type === 1) {
+    paymentMethod.value = null
+  }
 
   await nextTick()
 
@@ -108,7 +117,8 @@ const handleSubmit = async () => {
     return
   }
 
-  if (!paymentMethod.value) {
+  // El medio de pago solamente es obligatorio para pagos.
+  if (isPayment.value && !paymentMethod.value) {
     transactionError.value = 'Selecciona el medio de pago.'
     return
   }
@@ -120,7 +130,11 @@ const handleSubmit = async () => {
       usuario_id: selectedAccount.value.usuario_id,
       tipo_transaccion_id: Number(transactionType.value),
       monto: numericAmount,
-      medio_pago_id: Number(paymentMethod.value),
+    }
+
+    // Solo los pagos necesitan medio de pago.
+    if (isPayment.value) {
+      payload.medio_pago_id = Number(paymentMethod.value)
     }
 
     if (description.value.trim()) {
@@ -129,27 +143,13 @@ const handleSubmit = async () => {
 
     const response = await transactionsService.createTransaction(payload)
 
-    transactionSuccess.value =
-      response?.data?.message || 'Transacción registrada correctamente.'
-
     emit('transaction-created', {
       account: selectedAccount.value,
       transaction: response?.data?.data || response?.data,
     })
 
-    /*
-     * Dejamos el formulario listo para otra operación sobre
-     * la misma cuenta. Esto permite registrar varias transacciones
-     * rápidamente sin volver al buscador.
-     */
-    amount.value = ''
-    description.value = ''
-
-    await nextTick()
-
-    if (amountInput.value) {
-      amountInput.value.focus()
-    }
+    // Cerrar inmediatamente después de registrar correctamente.
+    closeTransaction()
   } catch (error) {
     transactionError.value =
       error?.response?.data?.message ||
@@ -241,7 +241,6 @@ const formatCurrency = (value) => {
     </div>
   </div>
 
-  <!-- Modal de transacción -->
   <div
     v-if="selectedAccount"
     class="modal-overlay"
@@ -281,7 +280,7 @@ const formatCurrency = (value) => {
             <button
               type="button"
               class="type-button credit"
-              :class="{ selected: transactionType === 1 }"
+              :class="{ selected: isCredit }"
               @click="selectTransactionType(1)"
             >
               <span class="type-title">Crédito</span>
@@ -291,7 +290,7 @@ const formatCurrency = (value) => {
             <button
               type="button"
               class="type-button payment"
-              :class="{ selected: transactionType === 2 }"
+              :class="{ selected: isPayment }"
               @click="selectTransactionType(2)"
             >
               <span class="type-title">Pago</span>
@@ -320,7 +319,10 @@ const formatCurrency = (value) => {
           </div>
         </div>
 
-        <div class="form-group">
+        <div
+          v-if="isPayment"
+          class="form-group"
+        >
           <label for="payment-method">Medio de pago</label>
 
           <select
@@ -365,13 +367,6 @@ const formatCurrency = (value) => {
           {{ transactionError }}
         </div>
 
-        <div
-          v-if="transactionSuccess"
-          class="transaction-message success"
-        >
-          {{ transactionSuccess }}
-        </div>
-
         <div class="modal-actions">
           <button
             type="button"
@@ -379,7 +374,7 @@ const formatCurrency = (value) => {
             :disabled="submitting"
             @click="closeTransaction"
           >
-            Cerrar
+            Cancelar
           </button>
 
           <button
@@ -529,8 +524,6 @@ const formatCurrency = (value) => {
   text-align: center;
   color: var(--color-text-secondary);
 }
-
-/* Modal */
 
 .modal-overlay {
   position: fixed;
@@ -711,11 +704,6 @@ const formatCurrency = (value) => {
 .transaction-message.error {
   background: #ffebee;
   color: var(--color-danger);
-}
-
-.transaction-message.success {
-  background: #e8f5e9;
-  color: var(--color-success);
 }
 
 .modal-actions {
