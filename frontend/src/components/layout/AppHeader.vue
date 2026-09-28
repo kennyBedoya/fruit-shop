@@ -22,6 +22,10 @@
           Transacciones
         </RouterLink>
 
+        <RouterLink to="/buscar">
+          Buscar Cuenta
+        </RouterLink>
+
       </nav>
 
       <div class="user-menu">
