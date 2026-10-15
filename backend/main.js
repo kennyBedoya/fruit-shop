@@ -10,6 +10,7 @@ const usuarios = require("./services/usuarios");
 const cuentas = require("./services/cuentas");
 const transacciones = require("./services/transacciones");
 const auth = require("./services/auth");
+const requireAuth = require("./middleware/auth.middleware");
 
 const app = express();
 
@@ -55,9 +56,11 @@ async function start() {
         await connectDB();
 
         app.use("/auth", auth);
-        app.use("/usuarios", usuarios);
-        app.use("/cuentas", cuentas);
-        app.use("/transacciones", transacciones);
+
+        // Rutas protegidas: requieren una sesión autenticada.
+        app.use("/usuarios", requireAuth, usuarios);
+        app.use("/cuentas", requireAuth, cuentas);
+        app.use("/transacciones", requireAuth, transacciones);
 
         app.listen(3000, () => {
             console.log("Servidor iniciado en puerto 3000");
