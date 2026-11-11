@@ -10,6 +10,16 @@ defineProps({
   },
 })
 
+const getUserType = (type) => {
+  const types = {
+    1: 'Administrador',
+    2: 'Cliente',
+    3: 'Empleado',
+  }
+
+  return types[type] ?? 'Desconocido'
+}
+
 const emit = defineEmits([
   'edit',
   'deactivate',
@@ -53,7 +63,7 @@ const emit = defineEmits([
           <td>{{ user.id_usuario }}</td>
           <td>{{ user.nombre }}</td>
           <td>{{ user.apellidos }}</td>
-          <td>{{ user.tipo_usuario }}</td>
+          <td>{{ getUserType(user.tipo_usuario) }}</td>
           <td>{{ user.telefono }}</td>
           <td>{{ user.correo }}</td>
           <td>{{ user.edad }}</td>

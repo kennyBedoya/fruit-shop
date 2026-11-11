@@ -112,18 +112,26 @@ const handleSubmit = () => {
             />
           </div>
 
+          
           <div class="form-group">
             <label for="type">
               Tipo de usuario
             </label>
 
-            <input
+            <select
               id="type"
               v-model="form.type"
-              type="text"
               required
-            />
+            >
+              <option value="" disabled>
+                Selecciona un tipo de usuario
+              </option>
+              <option :value="1">Administrador</option>
+              <option :value="2">Cliente</option>
+              <option :value="3">Empleado</option>
+            </select>
           </div>
+
 
           <div class="form-group">
             <label for="phone">
@@ -205,6 +213,33 @@ const handleSubmit = () => {
 </template>
 
 <style scoped>
+
+.form-group input,
+.form-group select {
+  width: 100%;
+
+  padding: 10px 12px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--color-primary);
+
+  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.12);
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
