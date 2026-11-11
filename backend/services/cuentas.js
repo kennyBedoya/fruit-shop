@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
                 u.apellidos,
                 c.saldo_anterior,
                 c.saldo_actual,
-                c.ultima_trasaccion_id
+                c.ultima_transaccion_id
             FROM cuentas c
             INNER JOIN usuarios u
                 ON c.usuario_id = u.id_usuario

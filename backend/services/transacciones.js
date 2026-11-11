@@ -199,7 +199,7 @@ router.post("/", async (req, res) => {
             SET
                 saldo_anterior = saldo_actual,
                 saldo_actual = ?,
-                ultima_trasaccion_id = ?
+                ultima_transaccion_id = ?
             WHERE id_cuentas = ?
         `, [
             saldoActual,
