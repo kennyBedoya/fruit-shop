@@ -13,13 +13,14 @@ defineProps({
 const emit = defineEmits([
   'edit',
   'deactivate',
-  'activate'
+  'activate',
+  'create-account',
+  'pause-account',
 ])
 </script>
 
 <template>
   <div class="table-container">
-
     <div v-if="loading" class="table-state">
       Cargando usuarios...
     </div>
@@ -29,7 +30,6 @@ const emit = defineEmits([
     </div>
 
     <table v-else class="users-table">
-
       <thead>
         <tr>
           <th>ID</th>
@@ -46,25 +46,17 @@ const emit = defineEmits([
       </thead>
 
       <tbody>
-
         <tr
           v-for="user in users"
           :key="user.id_usuario"
         >
           <td>{{ user.id_usuario }}</td>
-
           <td>{{ user.nombre }}</td>
-
           <td>{{ user.apellidos }}</td>
-
           <td>{{ user.tipo_usuario }}</td>
-
           <td>{{ user.telefono }}</td>
-
           <td>{{ user.correo }}</td>
-
           <td>{{ user.edad }}</td>
-
           <td>{{ user.institucion }}</td>
 
           <td>
@@ -103,15 +95,36 @@ const emit = defineEmits([
               >
                 Activar
               </button>
+
+              <button
+                v-if="user.activo && user.cuenta_estado === 'sin_cuenta'"
+                type="button"
+                class="action-button create-account"
+                @click="emit('create-account', user)"
+              >
+                Crear cuenta
+              </button>
+
+              <button
+                v-if="user.activo && user.cuenta_estado === 'abierta'"
+                type="button"
+                class="action-button pause-account"
+                @click="emit('pause-account', user)"
+              >
+                Pausar cuenta
+              </button>
+
+              <span
+                v-if="user.cuenta_estado === 'cargando'"
+                class="account-loading"
+              >
+                Consultando cuenta...
+              </span>
             </div>
           </td>
-
         </tr>
-
       </tbody>
-
     </table>
-
   </div>
 </template>
 
@@ -119,37 +132,29 @@ const emit = defineEmits([
 .table-container {
   width: 100%;
   overflow-x: auto;
-
   background: var(--color-surface);
   border-radius: var(--border-radius);
-
   box-shadow: var(--shadow-sm);
 }
 
 .users-table {
   width: 100%;
   border-collapse: collapse;
-
   min-width: 1000px;
 }
 
 .users-table th,
 .users-table td {
   padding: 14px 16px;
-
   text-align: left;
-
   border-bottom: 1px solid var(--color-border);
 }
 
 .users-table th {
   background: #fafafa;
-
   color: var(--color-text-secondary);
-
   font-size: 13px;
   font-weight: 600;
-
   white-space: nowrap;
 }
 
@@ -163,11 +168,8 @@ const emit = defineEmits([
 
 .status {
   display: inline-flex;
-
   padding: 4px 10px;
-
   border-radius: 20px;
-
   font-size: 12px;
   font-weight: 600;
 }
@@ -184,19 +186,20 @@ const emit = defineEmits([
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
+  min-width: 180px;
 }
 
 .action-button {
   border: 0;
-
   padding: 7px 12px;
-
   border-radius: 6px;
-
   font-size: 12px;
   font-weight: 600;
-
+  cursor: pointer;
+  white-space: nowrap;
   transition: opacity 0.2s ease;
 }
 
@@ -209,22 +212,28 @@ const emit = defineEmits([
   color: #1565c0;
 }
 
-.deactivate {
+.deactivate,
+.pause-account {
   background: #ffebee;
   color: var(--color-danger);
 }
 
-.table-state {
-  padding: 50px 20px;
-
-  text-align: center;
-
-  color: var(--color-text-secondary);
-}
-
-.activate {
+.activate,
+.create-account {
   background: #e8f5e9;
   color: var(--color-success);
+}
+
+.account-loading {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.table-state {
+  padding: 50px 20px;
+  text-align: center;
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 768px) {
